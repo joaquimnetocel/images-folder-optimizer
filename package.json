@@ -1,6 +1,20 @@
 {
 	"name": "images-folder-optimizer",
 	"version": "0.0.1",
+	"description": "...",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/joaquimnetocel/images-folder-optimizer.git"
+	},
+	"bugs": {
+		"url": "https://github.com/joaquimnetocel/images-folder-optimizer/issues"
+	},
+	"keywords": [
+		"image-optimizer",
+		"image-resizer"
+	],
+	"author": "Joaquim Neto <joaquim.neto.cel@gmail.com>",
+	"license": "ISC",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build && npm run package",
