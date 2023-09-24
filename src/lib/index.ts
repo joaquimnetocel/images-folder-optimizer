@@ -1,1 +1,3 @@
-// Reexport your entry components here
+import { functionOptimizeImages } from './functionOptimizeImages';
+
+export { functionOptimizeImages };
