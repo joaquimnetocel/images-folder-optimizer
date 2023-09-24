@@ -8,9 +8,8 @@
 		"resolveJsonModule": true,
 		"skipLibCheck": true,
 		"sourceMap": true,
-		"strict": true,
-		"moduleResolution": "NodeNext",
-		"module": "NodeNext"
+		"strict": true
+		// "moduleResolution": "NodeNext"
 	},
 	// ADDED BY ME: FIXES LINTER WARNING
 	"exclude": ["./dist/**/*"]
