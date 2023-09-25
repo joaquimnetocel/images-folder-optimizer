@@ -1,7 +1,7 @@
 {
   "name": "images-folder-optimizer",
-  "version": "0.0.10",
-  "description": "...",
+  "version": "0.0.11",
+  "description": "",
   "repository": {
     "type": "git",
     "url": "https://github.com/joaquimnetocel/images-folder-optimizer.git"
@@ -9,14 +9,10 @@
   "bugs": {
     "url": "https://github.com/joaquimnetocel/images-folder-optimizer/issues"
   },
-  "keywords": [
-    "image-optimizer",
-    "image-resizer"
-  ],
-  "author": "Joaquim Neto <joaquim.neto.cel@gmail.com>",
+  "keywords": [],
+  "author": "",
   "license": "ISC",
   "type": "module",
-  "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -24,9 +20,6 @@
     "optimize": "tsc && node dist/optimize.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@types/node": "^20.6.5",
     "sharp": "^0.32.6",
