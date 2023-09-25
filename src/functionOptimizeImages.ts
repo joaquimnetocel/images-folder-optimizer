@@ -166,20 +166,19 @@ export const functionOptimizeImages = async function ({
 	);
 	console.log('WAIT! OPTIMIZATIONS IN PROGRESS...');
 	await Promise.all(arrayFilePromises);
-	const arraySortedTableOfResults = arrayTableResults.sort(function (
-		par1,
-		par2,
-	) {
-		const stringLowerPar1 = par1['ORIGINAL FILE'].toLowerCase();
-		const stringLowerPar2 = par2['ORIGINAL FILE'].toLowerCase();
-		if (stringLowerPar1 < stringLowerPar2) {
-			return -1;
-		}
-		if (stringLowerPar1 > stringLowerPar2) {
-			return 1;
-		}
-		return 0;
-	});
+	const arraySortedTableOfResults = arrayTableResults.sort(
+		function (par1, par2) {
+			const stringLowerPar1 = par1['ORIGINAL FILE'].toLowerCase();
+			const stringLowerPar2 = par2['ORIGINAL FILE'].toLowerCase();
+			if (stringLowerPar1 < stringLowerPar2) {
+				return -1;
+			}
+			if (stringLowerPar1 > stringLowerPar2) {
+				return 1;
+			}
+			return 0;
+		},
+	);
 	console.table(arraySortedTableOfResults);
 	console.log('END OF OPTIMIZATIONS.');
 	return arraySortedTableOfResults;

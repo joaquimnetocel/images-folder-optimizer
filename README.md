@@ -10,20 +10,20 @@ npm install -D images-folder-optimizer
 
 ## EXAMPLE / USAGE
 
-- CREATE A JAVASCRIPT (OR TYPECRIPT) FILE, AS `example.js`:
+-   CREATE A JAVASCRIPT (OR TYPECRIPT) FILE, AS `example.js`:
 
 ```javascript
-import { functionOptimizeImages } from "$lib/index";
+import { functionOptimizeImages } from '$lib/index';
 
 functionOptimizeImages({
-  stringOriginFolder: "static/images/originals",
-  stringDestinationFolder: "static/images/optimized",
-  arrayExtensionsToAvoid: ["svg"],
-  objectResizeOptions: { width: 0.5 }, // 50% RESIZE ON WIDTH AND HEIGHT
+	stringOriginFolder: 'static/images/originals',
+	stringDestinationFolder: 'static/images/optimized',
+	arrayExtensionsToAvoid: ['svg'],
+	objectResizeOptions: { width: 0.5 }, // 50% RESIZE ON WIDTH AND HEIGHT
 });
 ```
 
-- RUN THE FILE:
+-   RUN THE FILE:
 
 ```bash
 node example.js
