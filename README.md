@@ -1,6 +1,6 @@
 # images-folder-optimizer
 
-This is a high speed package that uses [Sharp.js](https://sharp.pixelplumbing.com/) to recurively transform, convert and optimize images from a folder to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images of varying dimensions.
+This is a high speed package that uses [Sharp.js](https://sharp.pixelplumbing.com/) to recurively transform, convert and optimize images from a folder to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images of varying dimensions. It is also possible to add watermark to the transformed/optimized images.
 
 ## INSTALLATION
 
