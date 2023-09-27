@@ -1,6 +1,6 @@
 # images-folder-optimizer
 
-This is a high speed package that uses Sharp.js to recurively transform, convert and optimize images from a folder to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images of varying dimensions.
+This is a high speed package that uses [Sharp.js](https://sharp.pixelplumbing.com/) to recurively transform, convert and optimize images from a folder to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images of varying dimensions.
 
 ## INSTALLATION
 
@@ -10,20 +10,20 @@ npm install -D images-folder-optimizer
 
 ## EXAMPLE / USAGE
 
--   CREATE A JAVASCRIPT (OR TYPECRIPT) FILE, AS `example.js`:
+- CREATE A JAVASCRIPT (OR TYPECRIPT) FILE, AS `example.js`:
 
 ```javascript
 import { functionOptimizeImages } from '$lib/index';
 
 functionOptimizeImages({
-	stringOriginFolder: 'static/images/originals',
-	stringDestinationFolder: 'static/images/optimized',
-	arrayExtensionsToAvoid: ['svg'],
-	objectResizeOptions: { width: 0.5 }, // 50% RESIZE ON WIDTH AND HEIGHT
+    stringOriginFolder: 'static/images/originals',
+    stringDestinationFolder: 'static/images/optimized',
+    arrayExtensionsToAvoid: ['svg'],
+    objectResizeOptions: { width: 0.5 }, // 50% RESIZE ON WIDTH AND HEIGHT
 });
 ```
 
--   RUN THE FILE:
+- RUN THE FILE:
 
 ```bash
 node example.js

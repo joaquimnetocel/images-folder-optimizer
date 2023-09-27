@@ -1,25 +1,11 @@
 // npm install -D @types/node
 // npm install -D sharp
-import fs from "fs";
-import path from "path";
-import sharp from "sharp";
-const functionExtractNameAndExtension = function (parFullFileName) {
-    const arrayReturn = path.basename(parFullFileName || "").split(".");
-    return {
-        stringFileName: arrayReturn[0],
-        stringFileExtension: arrayReturn[1],
-    };
-};
-const functionHandleBars = function (parString) {
-    if (parString.at(0) === "/") {
-        parString = parString.slice(1);
-    }
-    if (parString.at(-1) === "/") {
-        parString = parString.slice(0, -1);
-    }
-    return parString;
-};
-export const functionOptimizeImages = async function ({ stringOriginFolder, stringDestinationFolder, arrayExtensionsToAvoid = ["svg"], objectWebpOptions, objectAvifOptions, objectJpegOptions, objectPngOptions, objectResizeOptions, }) {
+import fs from 'fs';
+import sharp from 'sharp';
+import { functionExtractNameAndExtension } from './functionExtractNameAndExtension.js';
+import { functionHandleBars } from './functionHandleBars.js';
+import { functionResize } from './functionResize.js';
+export const functionOptimizeImages = async function ({ stringOriginFolder, stringDestinationFolder, arrayInputFormats = ['avif', 'gif', 'jpg', 'png', 'svg', 'tiff', 'webp'], arrayOutputFormats, objectWebpOptions, objectAvifOptions, objectTiffOptions, objectJpegOptions, objectPngOptions, objectGifOptions, objectResizeOptions, objectBlurOptions, objectWatermarkOptions }) {
     stringOriginFolder = functionHandleBars(stringOriginFolder);
     stringDestinationFolder = functionHandleBars(stringDestinationFolder);
     const arrayTableResults = [];
@@ -27,41 +13,50 @@ export const functionOptimizeImages = async function ({ stringOriginFolder, stri
         fs.mkdirSync(stringDestinationFolder);
     }
     const arrayFileNames = fs.readdirSync(stringOriginFolder);
-    console.log(`OPTIMIZING THE FOLLOWING FILES: ${arrayFileNames.join(", ")}`);
+    console.log(`OPTIMIZING THE FOLLOWING FILES: ${arrayFileNames.join(', ')}`);
     const arrayFilePromises = arrayFileNames.map(async (currentFullFileName) => {
         const { stringFileName, stringFileExtension } = functionExtractNameAndExtension(currentFullFileName);
         if (stringFileExtension === undefined) {
             return;
         }
-        if (arrayExtensionsToAvoid.includes(stringFileExtension)) {
+        if (!arrayInputFormats.includes(stringFileExtension)) {
             return;
         }
         const sharpedFile = sharp(`${stringOriginFolder}/${currentFullFileName}`);
         const numberFileSize = Math.ceil(fs.statSync(`${stringOriginFolder}/${currentFullFileName}`).size / 1024);
-        const functionResize = async function () {
-            if (objectResizeOptions === undefined) {
-                return;
-            }
-            const objectNewResizeOptions = { ...objectResizeOptions };
-            if (objectResizeOptions.width !== undefined) {
-                if (objectResizeOptions.width < 1) {
-                    const { width: numberOriginalWidth } = await sharpedFile.metadata();
-                    if (numberOriginalWidth !== undefined) {
-                        objectNewResizeOptions.width = Math.round(objectResizeOptions.width * numberOriginalWidth);
-                    }
-                }
-            }
-            sharpedFile.resize(objectNewResizeOptions);
-        };
-        await functionResize();
-        const objectOptimizations = {};
-        objectOptimizations.webp = sharpedFile.clone().webp(objectWebpOptions);
-        objectOptimizations.avif = sharpedFile.clone().avif(objectAvifOptions);
-        if (stringFileExtension === "jpg") {
-            objectOptimizations.jpg = sharpedFile.clone().jpeg(objectJpegOptions);
+        await functionResize({
+            parSharp: sharpedFile,
+            parResizeOptions: objectResizeOptions,
+        });
+        // await functionWatermark({
+        // 	parSharp: sharpedFile,
+        // 	parWatermarkOptions: objectWatermarkOptions,
+        // });
+        if (objectBlurOptions !== undefined) {
+            sharpedFile.blur(objectBlurOptions.sigma);
         }
-        if (stringFileExtension === "png") {
-            objectOptimizations.png = sharpedFile.clone().png(objectPngOptions);
+        const objectOptimizations = {};
+        if (arrayOutputFormats.includes('webp')) {
+            objectOptimizations.webp = sharpedFile.clone().webp(objectWebpOptions);
+        }
+        if (arrayOutputFormats.includes('avif')) {
+            objectOptimizations.avif = sharpedFile.clone().avif(objectAvifOptions);
+        }
+        if (arrayOutputFormats.includes('jpg')) {
+            if (stringFileExtension === 'jpg') {
+                objectOptimizations.jpg = sharpedFile.clone().jpeg(objectJpegOptions);
+            }
+        }
+        if (arrayOutputFormats.includes('png')) {
+            if (stringFileExtension === 'png') {
+                objectOptimizations.png = sharpedFile.clone().png(objectPngOptions);
+            }
+        }
+        if (arrayOutputFormats.includes('tiff')) {
+            objectOptimizations.tiff = sharpedFile.clone().tiff(objectTiffOptions);
+        }
+        if (arrayOutputFormats.includes('gif')) {
+            objectOptimizations.gif = sharpedFile.clone().gif(objectGifOptions);
         }
         const arrayEntries = Object.entries(objectOptimizations);
         const arrayFormatPromises = arrayEntries.map(async ([currentKey, currentValue]) => {
@@ -72,19 +67,19 @@ export const functionOptimizeImages = async function ({ stringOriginFolder, stri
             const numberNewFileSize = Math.ceil(objectReturn.size / 1024);
             const numberChangeInQuiloBytes = ((numberNewFileSize - numberFileSize) / numberFileSize) * 100;
             arrayTableResults.push({
-                "ORIGINAL FILE": `${currentFullFileName} (${numberFileSize}KB)`,
-                "OPTIMIZED FILE": `${stringFileName}.${currentKey} (${numberNewFileSize}KB)`,
-                "TRANSFORMATION RESULT": `${numberChangeInQuiloBytes.toFixed(2)}%`,
+                'ORIGINAL FILE': `${currentFullFileName} (${numberFileSize}KB)`,
+                'OPTIMIZED FILE': `${stringFileName}.${currentKey} (${numberNewFileSize}KB)`,
+                'TRANSFORMATION RESULT': `${numberChangeInQuiloBytes.toFixed(2)}%`,
             });
             return objectReturn;
         });
         return await Promise.all(arrayFormatPromises);
     });
-    console.log("WAIT! OPTIMIZATIONS IN PROGRESS...");
+    console.log('WAIT! OPTIMIZATIONS IN PROGRESS...');
     await Promise.all(arrayFilePromises);
     const arraySortedTableOfResults = arrayTableResults.sort(function (par1, par2) {
-        const stringLowerPar1 = par1["ORIGINAL FILE"].toLowerCase();
-        const stringLowerPar2 = par2["ORIGINAL FILE"].toLowerCase();
+        const stringLowerPar1 = par1['ORIGINAL FILE'].toLowerCase();
+        const stringLowerPar2 = par2['ORIGINAL FILE'].toLowerCase();
         if (stringLowerPar1 < stringLowerPar2) {
             return -1;
         }
@@ -94,6 +89,6 @@ export const functionOptimizeImages = async function ({ stringOriginFolder, stri
         return 0;
     });
     console.table(arraySortedTableOfResults);
-    console.log("END OF OPTIMIZATIONS.");
+    console.log('END OF OPTIMIZATIONS.');
     return arraySortedTableOfResults;
 };

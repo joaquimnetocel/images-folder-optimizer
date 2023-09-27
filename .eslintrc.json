@@ -13,7 +13,7 @@
 	"rules": {
 		"comma-dangle": [1, "always-multiline"],
 		"indent": ["error", "tab"],
-		"linebreak-style": ["error", "windows"],
+		"linebreak-style": ["error", "unix"],
 		"quotes": ["error", "single", { "allowTemplateLiterals": true }],
 		"semi": ["error", "always"]
 	}

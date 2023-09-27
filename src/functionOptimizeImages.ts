@@ -1,55 +1,32 @@
 // npm install -D @types/node
 // npm install -D sharp
 import fs from 'fs';
-import path from 'path';
-import sharp, {
-	type AvifOptions,
-	type JpegOptions,
-	type PngOptions,
-	type ResizeOptions,
-	type Sharp,
-	type WebpOptions,
-} from 'sharp';
+import sharp, { type AvifOptions, type GifOptions, type JpegOptions, type PngOptions, type ResizeOptions, type Sharp, type TiffOptions, type WebpOptions } from 'sharp';
+import { functionExtractNameAndExtension } from './functionExtractNameAndExtension.js';
+import { functionHandleBars } from './functionHandleBars.js';
+import { functionResize } from './functionResize.js';
+import { functionWatermark, type typeWatermarkOptions } from './functionWatermark.js';
 
-const functionExtractNameAndExtension = function (parFullFileName: string) {
-	const arrayReturn = path.basename(parFullFileName || '').split('.');
-	return {
-		stringFileName: arrayReturn[0],
-		stringFileExtension: arrayReturn[1],
-	};
-};
-
-const functionHandleBars = function (parString: string) {
-	if (parString.at(0) === '/') {
-		parString = parString.slice(1);
-	}
-	if (parString.at(-1) === '/') {
-		parString = parString.slice(0, -1);
-	}
-	return parString;
-};
+type typeOutputFormats = 'webp' | 'avif' | 'png' | 'jpg' | 'tiff' | 'gif';
+type typeInputFormats = typeOutputFormats | 'svg';
 
 type typeParameters = {
 	stringOriginFolder: string;
 	stringDestinationFolder: string;
-	arrayExtensionsToAvoid: string[];
+	arrayInputFormats: typeInputFormats[];
+	arrayOutputFormats: typeOutputFormats[];
 	objectPngOptions?: PngOptions;
 	objectJpegOptions?: JpegOptions;
 	objectWebpOptions?: WebpOptions;
 	objectAvifOptions?: AvifOptions;
+	objectTiffOptions?: TiffOptions;
+	objectGifOptions?: GifOptions;
 	objectResizeOptions?: ResizeOptions;
+	objectBlurOptions?: { sigma: number | boolean | undefined };
+	objectWatermarkOptions?: typeWatermarkOptions;
 };
 
-export const functionOptimizeImages = async function ({
-	stringOriginFolder,
-	stringDestinationFolder,
-	arrayExtensionsToAvoid = ['svg'],
-	objectWebpOptions,
-	objectAvifOptions,
-	objectJpegOptions,
-	objectPngOptions,
-	objectResizeOptions,
-}: typeParameters) {
+export const functionOptimizeImages = async function ({ stringOriginFolder, stringDestinationFolder, arrayInputFormats = ['avif', 'gif', 'jpg', 'png', 'svg', 'tiff', 'webp'], arrayOutputFormats, objectWebpOptions, objectAvifOptions, objectTiffOptions, objectJpegOptions, objectPngOptions, objectGifOptions, objectResizeOptions, objectBlurOptions, objectWatermarkOptions }: typeParameters) {
 	stringOriginFolder = functionHandleBars(stringOriginFolder);
 	stringDestinationFolder = functionHandleBars(stringDestinationFolder);
 
@@ -68,117 +45,90 @@ export const functionOptimizeImages = async function ({
 
 	console.log(`OPTIMIZING THE FOLLOWING FILES: ${arrayFileNames.join(', ')}`);
 
-	const arrayFilePromises = arrayFileNames.map(
-		async (currentFullFileName) => {
-			const { stringFileName, stringFileExtension } =
-				functionExtractNameAndExtension(currentFullFileName);
+	const arrayFilePromises = arrayFileNames.map(async (currentFullFileName) => {
+		const { stringFileName, stringFileExtension } = functionExtractNameAndExtension(currentFullFileName);
 
-			if (stringFileExtension === undefined) {
-				return;
-			}
-			if (arrayExtensionsToAvoid.includes(stringFileExtension)) {
-				return;
-			}
+		if (stringFileExtension === undefined) {
+			return;
+		}
+		if (!arrayInputFormats.includes(stringFileExtension as typeInputFormats)) {
+			return;
+		}
 
-			const sharpedFile = sharp(
-				`${stringOriginFolder}/${currentFullFileName}`,
-			);
-			const numberFileSize = Math.ceil(
-				fs.statSync(`${stringOriginFolder}/${currentFullFileName}`)
-					.size / 1024,
-			);
+		const sharpedFile = sharp(`${stringOriginFolder}/${currentFullFileName}`);
+		const numberFileSize = Math.ceil(fs.statSync(`${stringOriginFolder}/${currentFullFileName}`).size / 1024);
 
-			const functionResize = async function () {
-				if (objectResizeOptions === undefined) {
-					return;
-				}
-				const objectNewResizeOptions = { ...objectResizeOptions };
-				if (objectResizeOptions.width !== undefined) {
-					if (objectResizeOptions.width < 1) {
-						const { width: numberOriginalWidth } =
-							await sharpedFile.metadata();
-						if (numberOriginalWidth !== undefined) {
-							objectNewResizeOptions.width = Math.round(
-								objectResizeOptions.width * numberOriginalWidth,
-							);
-						}
-					}
-				}
-				sharpedFile.resize(objectNewResizeOptions);
-			};
-			await functionResize();
+		// await functionResize({
+		// 	parSharp: sharpedFile,
+		// 	parResizeOptions: objectResizeOptions,
+		// });
+		await functionWatermark({
+			parSharp: sharpedFile,
+			parWatermarkOptions: objectWatermarkOptions,
+		});
 
-			const objectOptimizations: {
-				[key in 'webp' | 'avif' | 'jpg' | 'png']?: Sharp;
-			} = {};
-			objectOptimizations.webp = sharpedFile
-				.clone()
-				.webp(objectWebpOptions);
-			objectOptimizations.avif = sharpedFile
-				.clone()
-				.avif(objectAvifOptions);
+		if (objectBlurOptions !== undefined) {
+			sharpedFile.blur(objectBlurOptions.sigma);
+		}
+
+		const objectOptimizations: {
+			[key in typeOutputFormats]?: Sharp;
+		} = {};
+
+		if (arrayOutputFormats.includes('webp')) {
+			objectOptimizations.webp = sharpedFile.clone().webp(objectWebpOptions);
+		}
+		if (arrayOutputFormats.includes('avif')) {
+			objectOptimizations.avif = sharpedFile.clone().avif(objectAvifOptions);
+		}
+		if (arrayOutputFormats.includes('jpg')) {
 			if (stringFileExtension === 'jpg') {
-				objectOptimizations.jpg = sharpedFile
-					.clone()
-					.jpeg(objectJpegOptions);
+				objectOptimizations.jpg = sharpedFile.clone().jpeg(objectJpegOptions);
 			}
+		}
+		if (arrayOutputFormats.includes('png')) {
 			if (stringFileExtension === 'png') {
-				objectOptimizations.png = sharpedFile
-					.clone()
-					.png(objectPngOptions);
+				objectOptimizations.png = sharpedFile.clone().png(objectPngOptions);
 			}
+		}
+		if (arrayOutputFormats.includes('tiff')) {
+			objectOptimizations.tiff = sharpedFile.clone().tiff(objectTiffOptions);
+		}
+		if (arrayOutputFormats.includes('gif')) {
+			objectOptimizations.gif = sharpedFile.clone().gif(objectGifOptions);
+		}
 
-			const arrayEntries = Object.entries(objectOptimizations);
+		const arrayEntries = Object.entries(objectOptimizations);
 
-			const arrayFormatPromises = arrayEntries.map(
-				async ([currentKey, currentValue]) => {
-					if (
-						!fs.existsSync(
-							`${stringDestinationFolder}/${currentKey}`,
-						)
-					) {
-						fs.mkdirSync(
-							`${stringDestinationFolder}/${currentKey}`,
-						);
-					}
-					const objectReturn = await currentValue.toFile(
-						`${stringDestinationFolder}/${currentKey}/${stringFileName}.${currentKey}`,
-					);
-					const numberNewFileSize = Math.ceil(
-						objectReturn.size / 1024,
-					);
-					const numberChangeInQuiloBytes =
-						((numberNewFileSize - numberFileSize) /
-							numberFileSize) *
-						100;
-					arrayTableResults.push({
-						'ORIGINAL FILE': `${currentFullFileName} (${numberFileSize}KB)`,
-						'OPTIMIZED FILE': `${stringFileName}.${currentKey} (${numberNewFileSize}KB)`,
-						'TRANSFORMATION RESULT': `${numberChangeInQuiloBytes.toFixed(
-							2,
-						)}%`,
-					});
-					return objectReturn;
-				},
-			);
-			return await Promise.all(arrayFormatPromises);
-		},
-	);
+		const arrayFormatPromises = arrayEntries.map(async ([currentKey, currentValue]) => {
+			if (!fs.existsSync(`${stringDestinationFolder}/${currentKey}`)) {
+				fs.mkdirSync(`${stringDestinationFolder}/${currentKey}`);
+			}
+			const objectReturn = await currentValue.toFile(`${stringDestinationFolder}/${currentKey}/${stringFileName}.${currentKey}`);
+			const numberNewFileSize = Math.ceil(objectReturn.size / 1024);
+			const numberChangeInQuiloBytes = ((numberNewFileSize - numberFileSize) / numberFileSize) * 100;
+			arrayTableResults.push({
+				'ORIGINAL FILE': `${currentFullFileName} (${numberFileSize}KB)`,
+				'OPTIMIZED FILE': `${stringFileName}.${currentKey} (${numberNewFileSize}KB)`,
+				'TRANSFORMATION RESULT': `${numberChangeInQuiloBytes.toFixed(2)}%`,
+			});
+			return objectReturn;
+		});
+		return await Promise.all(arrayFormatPromises);
+	});
 	console.log('WAIT! OPTIMIZATIONS IN PROGRESS...');
 	await Promise.all(arrayFilePromises);
-	const arraySortedTableOfResults = arrayTableResults.sort(
-		function (par1, par2) {
-			const stringLowerPar1 = par1['ORIGINAL FILE'].toLowerCase();
-			const stringLowerPar2 = par2['ORIGINAL FILE'].toLowerCase();
-			if (stringLowerPar1 < stringLowerPar2) {
-				return -1;
-			}
-			if (stringLowerPar1 > stringLowerPar2) {
-				return 1;
-			}
-			return 0;
-		},
-	);
+	const arraySortedTableOfResults = arrayTableResults.sort(function (par1, par2) {
+		const stringLowerPar1 = par1['ORIGINAL FILE'].toLowerCase();
+		const stringLowerPar2 = par2['ORIGINAL FILE'].toLowerCase();
+		if (stringLowerPar1 < stringLowerPar2) {
+			return -1;
+		}
+		if (stringLowerPar1 > stringLowerPar2) {
+			return 1;
+		}
+		return 0;
+	});
 	console.table(arraySortedTableOfResults);
 	console.log('END OF OPTIMIZATIONS.');
 	return arraySortedTableOfResults;
