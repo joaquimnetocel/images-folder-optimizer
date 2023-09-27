@@ -4,6 +4,14 @@
 
 This is a high speed package that uses [sharp.js](https://sharp.pixelplumbing.com/) to recurively transform, convert and optimize images from a folder to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images. It is also possible to add watermark to the output images controlling opacity and positioning.
 
+## FEATURES
+
+- PROCCESS ALL IMAGE FILES IN A FOLDER
+- CONVERSION BETWEEN IMAGE FORMATS,CHOOSING BOTH INPUT AND OUTPUT FORMATS
+- IMAGE RESIZING
+- IMAGE TRANSFORMATIONS (ONLY BLUR FOR NOW)
+- POSSIBILITY TO OVERLAP A WATERMARK IMAGE CONTROLLING ITS OPACITY.
+
 ## USAGE
 
 ### IN YOUR PROJECT
