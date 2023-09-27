@@ -14,10 +14,10 @@ This is a high speed package that uses [Sharp.js](https://sharp.pixelplumbing.co
   npm install -D images-folder-optimizer
   ```
 
-- CREATE A JAVASCRIPT (OR TYPECRIPT) FILE, AS `example.js`:
+- CREATE A JAVASCRIPT (OR TYPESCRIPT) FILE, AS `example.js`:
 
   ```javascript
-  import { functionOptimizeImages } from '$lib/index';
+  import { functionOptimizeImages } from 'images-folder-optimizer';
 
   functionOptimizeImages({
       stringOriginFolder: 'static/images/originals',
