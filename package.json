@@ -1,8 +1,7 @@
 {
 	"name": "images-folder-optimizer",
 	"version": "0.0.14",
-	"description": "This is a high speed package that uses Sharp.js to recurively transform, convert and optimize images from a folder to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images of varying dimensions. It is also possible to add watermark to the transformed/optimized images.
-	",
+	"description": "This is a high speed package that uses Sharp.js to recurively transform, convert and optimize images from a folder to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images of varying dimensions. It is also possible to add watermark to the transformed/optimized images.",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/joaquimnetocel/images-folder-optimizer.git"
@@ -19,6 +18,7 @@
 	"scripts": {
 		"build": "tsc",
 		"optimize": "tsc && node dist/optimize.js",
+		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},

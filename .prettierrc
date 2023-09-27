@@ -5,5 +5,6 @@
 	"singleQuote": true,
 	"useTabs": true,
 	"bracketSpacing": true,
-	"printWidth": 1000
+	"printWidth": 1000,
+	"endOfLine": "crlf"
 }
