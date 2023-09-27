@@ -5,11 +5,14 @@ functionOptimizeImages({
     arrayInputFormats: ['jpg', 'png'],
     arrayOutputFormats: ['webp', 'tiff'],
     objectWatermarkOptions: {
-        numberOpacity: 0.1,
+        numberOpacity: 0.3,
         stringWatermarkFile: 'static/images/originals/logo.png',
-        stringGravity: 'centre',
+        stringGravity: 'southeast',
+        objectResizeOptions: {
+            width: 0.5,
+        },
     },
-    objectResizeOptions: {
-        width: 0.5,
-    },
+    // objectResizeOptions: {
+    // 	width: 0.5,
+    // },
 });

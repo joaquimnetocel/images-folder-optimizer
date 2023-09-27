@@ -1,11 +1,10 @@
-import sharp, { type Gravity, type ResizeOptions, type Sharp } from 'sharp';
-import { functionResize } from './functionResize.js';
+import sharp, { type ResizeOptions, type Sharp } from 'sharp';
 
 export type typeWatermarkOptions = {
 	stringWatermarkFile: string;
 	numberOpacity: number;
 	objectResizeOptions?: ResizeOptions;
-	stringGravity: Gravity;
+	stringGravity?: 'centre' | 'northwest' | 'northeast' | 'southeast' | 'southwest';
 };
 
 type typeParameters = {
@@ -17,56 +16,55 @@ export const functionWatermark = async function ({ parSharp, parWatermarkOptions
 	if (parWatermarkOptions === undefined) {
 		return;
 	}
-	const objectNewWatermarkOptions = { ...parWatermarkOptions };
-	if (objectNewWatermarkOptions.numberOpacity > 1) {
+	if (parWatermarkOptions.numberOpacity > 1) {
 		return;
 	}
-	if (objectNewWatermarkOptions.numberOpacity < 0) {
-		return;
-	}
-
-	const objectMetadata = await parSharp.metadata();
-
-	if (objectMetadata.width === undefined) {
-		return;
-	}
-	if (objectMetadata.height === undefined) {
+	if (parWatermarkOptions.numberOpacity < 0) {
 		return;
 	}
 
-	if (objectNewWatermarkOptions.objectResizeOptions === undefined) {
-		objectNewWatermarkOptions.objectResizeOptions = {
-			width: objectMetadata.width,
-			height: objectMetadata.height,
+	const { width: numberImageWidth, height: numberImageHeight } = await parSharp.metadata();
+	if (numberImageWidth === undefined) {
+		return;
+	}
+	if (numberImageHeight === undefined) {
+		return;
+	}
+
+	const sharpWatermark = sharp(parWatermarkOptions.stringWatermarkFile);
+
+	const functionProccessWatermarkResizeOptions = async function () {
+		const temp = parWatermarkOptions.objectResizeOptions ?? {
+			width: numberImageWidth,
+			height: numberImageHeight,
 		};
-	}
+		const objectReturn = { ...temp };
+		// IF PERCENTUAL WIDTH THEN MAKE WATERMARK WIDTH AS PERCENTUAL OF IMAGE WIDTH
+		if (objectReturn.width !== undefined) {
+			if (objectReturn.width < 1) {
+				objectReturn.width = Math.floor(objectReturn.width * numberImageWidth);
+			}
+		}
+		/////
+		// TRUNCATE WATERMARK WIDTH TO IMAGE WIDTH
+		if (objectReturn.width !== undefined) {
+			objectReturn.width = objectReturn.width > numberImageWidth ? numberImageWidth : objectReturn.width;
+		}
+		/////
+		// TRUNCATE WATERMARK HEIGHT TO IMAGE HEIGHT
+		if (objectReturn.height !== undefined) {
+			objectReturn.height = objectReturn.height > numberImageHeight ? numberImageHeight : objectReturn.height;
+		}
+		/////
+		return objectReturn;
+	};
+	const objectNewWatermarkResizeOptions = await functionProccessWatermarkResizeOptions();
 
-	// TRUNCATE WATERMARK WIDTH TO IMAGE WIDTH
-	if (objectNewWatermarkOptions.objectResizeOptions?.width !== undefined) {
-		objectNewWatermarkOptions.objectResizeOptions.width = objectNewWatermarkOptions.objectResizeOptions.width > objectMetadata.width ? objectMetadata.width : objectNewWatermarkOptions.objectResizeOptions.width;
-	}
-	/////
-	// TRUNCATE WATERMARK HEIGHT TO IMAGE HEIGHT
-	if (objectNewWatermarkOptions.objectResizeOptions?.height !== undefined) {
-		objectNewWatermarkOptions.objectResizeOptions.height = objectNewWatermarkOptions.objectResizeOptions.height > objectMetadata.height ? objectMetadata.height : objectNewWatermarkOptions.objectResizeOptions.height;
-	}
-	/////
+	sharpWatermark.resize(objectNewWatermarkResizeOptions);
 
-	const sharpedWatermark = sharp(objectNewWatermarkOptions.stringWatermarkFile);
-
-	await functionResize({
-		parSharp: sharpedWatermark,
-		parResizeOptions: objectNewWatermarkOptions.objectResizeOptions,
-	});
-	// if (objectNewResizeOptions !== undefined) {
-	// 	const bb = await sharpedWatermark.resize(50).toBuffer();
-	// 	// const oioi = await bb.clone().metadata();
-	// 	console.log(bb);
-	// }
-
-	sharpedWatermark.composite([
+	sharpWatermark.composite([
 		{
-			input: Buffer.from([0, 0, 0, 255 * objectNewWatermarkOptions.numberOpacity]),
+			input: Buffer.from([0, 0, 0, 255 * parWatermarkOptions.numberOpacity]),
 			raw: {
 				width: 1,
 				height: 1,
@@ -76,8 +74,7 @@ export const functionWatermark = async function ({ parSharp, parWatermarkOptions
 			blend: 'dest-in',
 		},
 	]);
-	const buffer = await sharpedWatermark.toBuffer();
+	const bufferWatermark = await sharpWatermark.toBuffer();
 
-	parSharp.composite([{ input: buffer }]);
-	//, gravity: objectNewWatermarkOptions.stringGravity
+	parSharp.composite([{ input: bufferWatermark, gravity: parWatermarkOptions.stringGravity }]);
 };

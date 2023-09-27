@@ -55,47 +55,50 @@ export const functionOptimizeImages = async function ({ stringOriginFolder, stri
 			return;
 		}
 
-		const sharpedFile = sharp(`${stringOriginFolder}/${currentFullFileName}`);
+		const sharpOriginalFile = sharp(`${stringOriginFolder}/${currentFullFileName}`);
 		const numberFileSize = Math.ceil(fs.statSync(`${stringOriginFolder}/${currentFullFileName}`).size / 1024);
 
-		// await functionResize({
-		// 	parSharp: sharpedFile,
-		// 	parResizeOptions: objectResizeOptions,
-		// });
-		await functionWatermark({
-			parSharp: sharpedFile,
-			parWatermarkOptions: objectWatermarkOptions,
+		await functionResize({
+			parSharp: sharpOriginalFile,
+			parResizeOptions: objectResizeOptions,
 		});
+		let sharpFile = sharp(await sharpOriginalFile.toBuffer());
 
 		if (objectBlurOptions !== undefined) {
-			sharpedFile.blur(objectBlurOptions.sigma);
+			sharpFile.blur(objectBlurOptions.sigma);
 		}
+
+		await functionWatermark({
+			parSharp: sharpFile,
+			parWatermarkOptions: objectWatermarkOptions,
+		});
+		sharpFile = sharp(await sharpFile.toBuffer());
 
 		const objectOptimizations: {
 			[key in typeOutputFormats]?: Sharp;
 		} = {};
 
 		if (arrayOutputFormats.includes('webp')) {
-			objectOptimizations.webp = sharpedFile.clone().webp(objectWebpOptions);
+			objectOptimizations.webp = sharpFile.clone().webp(objectWebpOptions);
 		}
 		if (arrayOutputFormats.includes('avif')) {
-			objectOptimizations.avif = sharpedFile.clone().avif(objectAvifOptions);
+			objectOptimizations.avif = sharpFile.clone().avif(objectAvifOptions);
 		}
 		if (arrayOutputFormats.includes('jpg')) {
 			if (stringFileExtension === 'jpg') {
-				objectOptimizations.jpg = sharpedFile.clone().jpeg(objectJpegOptions);
+				objectOptimizations.jpg = sharpFile.clone().jpeg(objectJpegOptions);
 			}
 		}
 		if (arrayOutputFormats.includes('png')) {
 			if (stringFileExtension === 'png') {
-				objectOptimizations.png = sharpedFile.clone().png(objectPngOptions);
+				objectOptimizations.png = sharpFile.clone().png(objectPngOptions);
 			}
 		}
 		if (arrayOutputFormats.includes('tiff')) {
-			objectOptimizations.tiff = sharpedFile.clone().tiff(objectTiffOptions);
+			objectOptimizations.tiff = sharpFile.clone().tiff(objectTiffOptions);
 		}
 		if (arrayOutputFormats.includes('gif')) {
-			objectOptimizations.gif = sharpedFile.clone().gif(objectGifOptions);
+			objectOptimizations.gif = sharpFile.clone().gif(objectGifOptions);
 		}
 
 		const arrayEntries = Object.entries(objectOptimizations);

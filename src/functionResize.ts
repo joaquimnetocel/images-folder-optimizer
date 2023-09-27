@@ -15,9 +15,9 @@ export const functionResize = async function ({ parSharp, parResizeOptions }: ty
 			const objectMetadata = await parSharp.metadata();
 			if (objectMetadata.width !== undefined) {
 				objectNewResizeOptions.width = Math.round(parResizeOptions.width * objectMetadata.width);
+				console.log(objectMetadata.width);
 			}
 		}
 	}
-	// return objectNewResizeOptions;
 	parSharp.resize(objectNewResizeOptions);
 };
