@@ -1,40 +1,59 @@
 # images-folder-optimizer
 
+![GITHUB VERSION](https://img.shields.io/github/package-json/v/joaquimnetocel/images-folder-optimizer?label=github%20version&logo=github&color=lightgray) ![NPM VERSION](https://img.shields.io/npm/v/images-folder-optimizer?color=red&logo=npm&label=npm%20version) ![NPM Downloads](https://img.shields.io/npm/dw/images-folder-optimizer?color=red&label=npm%20downloads&logo=npm) ![NPM License](https://img.shields.io/npm/l/images-folder-optimizer?color) [![Twitter](https://img.shields.io/twitter/follow/:twitterHandle.svg?style=social&label=@joaquimnetocel)](https://twitter.com/joaquimnetocel)
+
 This is a high speed package that uses [Sharp.js](https://sharp.pixelplumbing.com/) to recurively transform, convert and optimize images from a folder to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images of varying dimensions. It is also possible to add watermark to the transformed/optimized images.
 
-## INSTALLATION
+## USAGE
 
-```bash
-npm install -D images-folder-optimizer
-```
+### IN YOUR PROJECT
 
-## EXAMPLE / USAGE
+- INSTALL THE PACKAGE:
+
+  ```bash
+  npm install -D images-folder-optimizer
+  ```
 
 - CREATE A JAVASCRIPT (OR TYPECRIPT) FILE, AS `example.js`:
 
-```javascript
-import { functionOptimizeImages } from '$lib/index';
+  ```javascript
+  import { functionOptimizeImages } from '$lib/index';
 
-functionOptimizeImages({
-    stringOriginFolder: 'static/images/originals',
-    stringDestinationFolder: 'static/images/optimized',
-    arrayExtensionsToAvoid: ['svg'],
-    objectResizeOptions: { width: 0.5 }, // 50% RESIZE ON WIDTH AND HEIGHT
-});
-```
+  functionOptimizeImages({
+      stringOriginFolder: 'static/images/originals',
+      stringDestinationFolder: 'static/images/optimized',
+      arrayInputFormats: ['jpg', 'png'],
+      arrayOutputFormats: ['webp', 'avif'],
+  });
+  ```
 
 - RUN THE FILE:
 
-```bash
-node example.js
-```
+  ```bash
+  node example.js
+  ```
 
-## DEVELOPING
+### BUILT-IN EXAMPLE
 
-ONCE YOU'VE CREATED A PROJECT AND INSTALLED DEPENDENCIES, START A DEVELOPMENT SERVER POWERED BY SVELTEKIT:
+YOU CAN TRY A BUILT-IN EXAMPLE WITH:
 
-```bash
-npm run dev
-```
+  ```bash
+  npx tsc
+  node dist/example.js
+  ```
 
-EVERYTHING INSIDE `SRC/LIB` IS PART OF YOUR LIBRARY, EVERYTHING INSIDE `SRC/ROUTES` CAN BE USED AS A SHOWCASE OR PREVIEW APP.
+OR WITH THE EQUIVALENT NPM SCRIPT:
+
+  ```bash
+  npm run example
+  ```
+
+## PARAMETERS
+
+<!-- ### FOR `functionOptimizeImages`
+
+| PARAMETER | DESCRIPTION | TYPE | REQUIRED | DEFAULT |
+| - | - | - | - | - |
+| `stringOriginFolder` | THE FOLDER WITH THE ORIGINAL IMAGES | `string` | YES | - | -->
+
+UNDER CONSTRUCTION...
