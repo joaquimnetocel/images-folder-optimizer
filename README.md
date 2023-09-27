@@ -44,7 +44,7 @@ This is a high speed package that uses [sharp.js](https://sharp.pixelplumbing.co
 
 ### BUILT-IN EXAMPLE
 
-YOU CAN TRY A BUILT-IN TYPESCRIPT EXAMPLE WITH:
+YOU CAN TRY A BUILT-IN EXAMPLE WITH:
 
   ```bash
   npx tsc
