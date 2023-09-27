@@ -12,7 +12,4 @@ functionOptimizeImages({
             width: 0.5,
         },
     },
-    // objectResizeOptions: {
-    // 	width: 0.5,
-    // },
 });
