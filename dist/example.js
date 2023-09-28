@@ -4,4 +4,6 @@ functionOptimizeImages({
     stringDestinationFolder: 'static/images/optimized',
     arrayInputFormats: ['jpg', 'png'],
     arrayOutputFormats: ['webp', 'avif'],
-}).then((results) => console.table(results));
+}).then((results) => {
+    console.table(results);
+});
