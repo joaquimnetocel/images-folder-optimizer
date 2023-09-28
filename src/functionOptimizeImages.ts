@@ -1,6 +1,7 @@
 // npm install -D @types/node
 // npm install -D sharp
 import fs from 'fs';
+import path from 'path';
 import sharp, { type AvifOptions, type GifOptions, type JpegOptions, type PngOptions, type ResizeOptions, type Sharp, type TiffOptions, type WebpOptions } from 'sharp';
 import { functionExtractNameAndExtension } from './functionExtractNameAndExtension.js';
 import { functionHandleBars } from './functionHandleBars.js';
@@ -26,9 +27,10 @@ type typeParameters = {
 	objectWatermarkOptions?: typeWatermarkOptions;
 };
 
-export const functionOptimizeImages = async function ({ stringOriginFolder, stringDestinationFolder, arrayInputFormats = ['avif', 'gif', 'jpg', 'png', 'svg', 'tiff', 'webp'], arrayOutputFormats, objectWebpOptions, objectAvifOptions, objectTiffOptions, objectJpegOptions, objectPngOptions, objectGifOptions, objectResizeOptions, objectBlurOptions, objectWatermarkOptions }: typeParameters) {
-	stringOriginFolder = functionHandleBars(stringOriginFolder);
-	stringDestinationFolder = functionHandleBars(stringDestinationFolder);
+export const functionOptimizeImages = async function (objectParameters: typeParameters) {
+	const { stringOriginFolder, stringDestinationFolder, arrayInputFormats = ['avif', 'gif', 'jpg', 'png', 'svg', 'tiff', 'webp'], arrayOutputFormats, objectWebpOptions, objectAvifOptions, objectTiffOptions, objectJpegOptions, objectPngOptions, objectGifOptions, objectResizeOptions, objectBlurOptions, objectWatermarkOptions } = objectParameters;
+	const stringNewOriginFolder = functionHandleBars(stringOriginFolder);
+	const stringNewDestinationFolder = functionHandleBars(stringDestinationFolder);
 
 	type typeTableResults = {
 		'ORIGINAL FILE': string;
@@ -37,13 +39,26 @@ export const functionOptimizeImages = async function ({ stringOriginFolder, stri
 	};
 	const arrayTableResults: typeTableResults[] = [];
 
-	if (!fs.existsSync(stringDestinationFolder)) {
-		fs.mkdirSync(stringDestinationFolder);
+	if (!fs.existsSync(stringNewDestinationFolder)) {
+		fs.mkdirSync(stringNewDestinationFolder);
 	}
 
-	const arrayFileNames = fs.readdirSync(stringOriginFolder);
+	const arrayFolderContent = fs.readdirSync(stringNewOriginFolder, { withFileTypes: true });
+	const arrayFileNames = arrayFolderContent.filter((current) => !current.isDirectory()).map((current) => current.name);
+	const arraySubFolderNames = arrayFolderContent.filter((current) => current.isDirectory()).map((current) => current.name);
 
-	console.log(`OPTIMIZING THE FOLLOWING FILES: ${arrayFileNames.join(', ')}`);
+	// APPLY RECURSIVELY ON SUBFOLDERS
+	const arraySubfolderPromises = arraySubFolderNames.map((currentSubfolder) => {
+		const objectNewParameters = { ...objectParameters };
+		objectNewParameters.stringOriginFolder = path.join(stringNewOriginFolder, currentSubfolder);
+		objectNewParameters.stringDestinationFolder = path.join(stringNewDestinationFolder, currentSubfolder);
+		return functionOptimizeImages(objectNewParameters);
+	});
+	const arraySubfolderResults = (await Promise.all(arraySubfolderPromises)).flat();
+	arrayTableResults.push(...arraySubfolderResults);
+	/////
+
+	console.log(`OPTIMIZING THE FOLDER ${stringNewOriginFolder} WITH THE FOLLOWING FILES: ${arrayFileNames.join(', ')}`);
 
 	const arrayFilePromises = arrayFileNames.map(async (currentFullFileName) => {
 		const { stringFileName, stringFileExtension } = functionExtractNameAndExtension(currentFullFileName);
@@ -55,8 +70,8 @@ export const functionOptimizeImages = async function ({ stringOriginFolder, stri
 			return;
 		}
 
-		const sharpOriginalFile = sharp(`${stringOriginFolder}/${currentFullFileName}`);
-		const numberFileSize = Math.ceil(fs.statSync(`${stringOriginFolder}/${currentFullFileName}`).size / 1024);
+		const sharpOriginalFile = sharp(`${stringNewOriginFolder}/${currentFullFileName}`);
+		const numberFileSize = Math.ceil(fs.statSync(`${stringNewOriginFolder}/${currentFullFileName}`).size / 1024);
 
 		await functionResize({
 			parSharp: sharpOriginalFile,
@@ -104,14 +119,14 @@ export const functionOptimizeImages = async function ({ stringOriginFolder, stri
 		const arrayEntries = Object.entries(objectOptimizations);
 
 		const arrayFormatPromises = arrayEntries.map(async ([currentKey, currentValue]) => {
-			if (!fs.existsSync(`${stringDestinationFolder}/${currentKey}`)) {
-				fs.mkdirSync(`${stringDestinationFolder}/${currentKey}`);
+			if (!fs.existsSync(`${stringNewDestinationFolder}/${currentKey}`)) {
+				fs.mkdirSync(`${stringNewDestinationFolder}/${currentKey}`);
 			}
-			const objectReturn = await currentValue.toFile(`${stringDestinationFolder}/${currentKey}/${stringFileName}.${currentKey}`);
+			const objectReturn = await currentValue.toFile(`${stringNewDestinationFolder}/${currentKey}/${stringFileName}.${currentKey}`);
 			const numberNewFileSize = Math.ceil(objectReturn.size / 1024);
 			const numberChangeInQuiloBytes = ((numberNewFileSize - numberFileSize) / numberFileSize) * 100;
 			arrayTableResults.push({
-				'ORIGINAL FILE': `${currentFullFileName} (${numberFileSize}KB)`,
+				'ORIGINAL FILE': `${path.join(stringNewOriginFolder, currentFullFileName)} (${numberFileSize}KB)`,
 				'OPTIMIZED FILE': `${stringFileName}.${currentKey} (${numberNewFileSize}KB)`,
 				'TRANSFORMATION RESULT': `${numberChangeInQuiloBytes.toFixed(2)}%`,
 			});
@@ -132,7 +147,6 @@ export const functionOptimizeImages = async function ({ stringOriginFolder, stri
 		}
 		return 0;
 	});
-	console.table(arraySortedTableOfResults);
 	console.log('END OF OPTIMIZATIONS.');
 	return arraySortedTableOfResults;
 };

@@ -19,7 +19,7 @@ type typeParameters = {
     };
     objectWatermarkOptions?: typeWatermarkOptions;
 };
-export declare const functionOptimizeImages: ({ stringOriginFolder, stringDestinationFolder, arrayInputFormats, arrayOutputFormats, objectWebpOptions, objectAvifOptions, objectTiffOptions, objectJpegOptions, objectPngOptions, objectGifOptions, objectResizeOptions, objectBlurOptions, objectWatermarkOptions }: typeParameters) => Promise<{
+export declare const functionOptimizeImages: (objectParameters: typeParameters) => Promise<{
     'ORIGINAL FILE': string;
     'OPTIMIZED FILE': string;
     'TRANSFORMATION RESULT': string;

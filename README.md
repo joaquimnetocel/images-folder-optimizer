@@ -7,11 +7,13 @@ This is a high speed package that uses [sharp.js](https://sharp.pixelplumbing.co
 ## FEATURES
 
 - PROCCESS ALL IMAGE FILES IN A FOLDER AT ONCE
+- SCAN FOR IMAGE FILES RECURSIVELY ON ALL SUBFOLDERS
 - CONVERSION BETWEEN IMAGE FORMATS, CHOOSING BOTH INPUT AND OUTPUT FORMATS
 - IMAGE RESIZING
 - IMAGE TRANSFORMATIONS (ONLY BLUR FOR NOW)
 - POSSIBILITY TO OVERLAP A WATERMARK IMAGE CONTROLLING ITS OPACITY
 - FULL TYPESCRIPT SUPPORT
+- FULL CONTROL FOR SHARP.JS PARAMETERS
 
 ## USAGE
 
@@ -33,6 +35,8 @@ This is a high speed package that uses [sharp.js](https://sharp.pixelplumbing.co
       stringDestinationFolder: 'static/images/optimized',
       arrayInputFormats: ['jpg', 'png'],
       arrayOutputFormats: ['webp', 'avif'],
+  }).then((results) => {
+      console.table(results);
   });
   ```
 
