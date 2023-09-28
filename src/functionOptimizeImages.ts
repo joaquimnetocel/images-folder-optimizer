@@ -14,8 +14,8 @@ type typeInputFormats = typeOutputFormats | 'svg';
 type typeParameters = {
 	stringOriginFolder: string;
 	stringDestinationFolder: string;
-	arrayInputFormats: typeInputFormats[];
-	arrayOutputFormats: typeOutputFormats[];
+	arrayOriginFormats: typeInputFormats[];
+	arrayDestinationFormats: typeOutputFormats[];
 	objectPngOptions?: PngOptions;
 	objectJpegOptions?: JpegOptions;
 	objectWebpOptions?: WebpOptions;
@@ -28,7 +28,7 @@ type typeParameters = {
 };
 
 export const functionOptimizeImages = async function (objectParameters: typeParameters) {
-	const { stringOriginFolder, stringDestinationFolder, arrayInputFormats = ['avif', 'gif', 'jpg', 'png', 'svg', 'tiff', 'webp'], arrayOutputFormats, objectWebpOptions, objectAvifOptions, objectTiffOptions, objectJpegOptions, objectPngOptions, objectGifOptions, objectResizeOptions, objectBlurOptions, objectWatermarkOptions } = objectParameters;
+	const { stringOriginFolder, stringDestinationFolder, arrayOriginFormats = ['avif', 'gif', 'jpg', 'png', 'svg', 'tiff', 'webp'], arrayDestinationFormats, objectWebpOptions, objectAvifOptions, objectTiffOptions, objectJpegOptions, objectPngOptions, objectGifOptions, objectResizeOptions, objectBlurOptions, objectWatermarkOptions } = objectParameters;
 	const stringNewOriginFolder = functionHandleBars(stringOriginFolder);
 	const stringNewDestinationFolder = functionHandleBars(stringDestinationFolder);
 
@@ -66,7 +66,7 @@ export const functionOptimizeImages = async function (objectParameters: typePara
 		if (stringFileExtension === undefined) {
 			return;
 		}
-		if (!arrayInputFormats.includes(stringFileExtension as typeInputFormats)) {
+		if (!arrayOriginFormats.includes(stringFileExtension as typeInputFormats)) {
 			return;
 		}
 
@@ -93,26 +93,26 @@ export const functionOptimizeImages = async function (objectParameters: typePara
 			[key in typeOutputFormats]?: Sharp;
 		} = {};
 
-		if (arrayOutputFormats.includes('webp')) {
+		if (arrayDestinationFormats.includes('webp')) {
 			objectOptimizations.webp = sharpFile.clone().webp(objectWebpOptions);
 		}
-		if (arrayOutputFormats.includes('avif')) {
+		if (arrayDestinationFormats.includes('avif')) {
 			objectOptimizations.avif = sharpFile.clone().avif(objectAvifOptions);
 		}
-		if (arrayOutputFormats.includes('jpg')) {
+		if (arrayDestinationFormats.includes('jpg')) {
 			if (stringFileExtension === 'jpg') {
 				objectOptimizations.jpg = sharpFile.clone().jpeg(objectJpegOptions);
 			}
 		}
-		if (arrayOutputFormats.includes('png')) {
+		if (arrayDestinationFormats.includes('png')) {
 			if (stringFileExtension === 'png') {
 				objectOptimizations.png = sharpFile.clone().png(objectPngOptions);
 			}
 		}
-		if (arrayOutputFormats.includes('tiff')) {
+		if (arrayDestinationFormats.includes('tiff')) {
 			objectOptimizations.tiff = sharpFile.clone().tiff(objectTiffOptions);
 		}
-		if (arrayOutputFormats.includes('gif')) {
+		if (arrayDestinationFormats.includes('gif')) {
 			objectOptimizations.gif = sharpFile.clone().gif(objectGifOptions);
 		}
 

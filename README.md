@@ -33,8 +33,8 @@ This is a high speed package that uses [sharp.js](https://sharp.pixelplumbing.co
   functionOptimizeImages({
       stringOriginFolder: 'static/images/originals',
       stringDestinationFolder: 'static/images/optimized',
-      arrayInputFormats: ['jpg', 'png'],
-      arrayOutputFormats: ['webp', 'avif'],
+      arrayOriginFormats: ['jpg', 'png'],
+      arrayDestinationFormats: ['webp', 'avif'],
   }).then((results) => {
       console.table(results);
   });
@@ -46,7 +46,7 @@ This is a high speed package that uses [sharp.js](https://sharp.pixelplumbing.co
   node example.js
   ```
 
-### BUILT-IN EXAMPLE
+## BUILT-IN EXAMPLE
 
 YOU CAN TRY A BUILT-IN EXAMPLE WITH:
 
@@ -61,12 +61,55 @@ OR WITH THE EQUIVALENT NPM SCRIPT:
   npm run example
   ```
 
-## PARAMETERS
+## EXAMPLES
 
-<!-- ### FOR `functionOptimizeImages`
+- IMAGE RESIZING:
+
+  ```javascript
+  import { functionOptimizeImages } from 'images-folder-optimizer';
+
+  functionOptimizeImages({
+      stringOriginFolder: 'static/images/originals',
+      stringDestinationFolder: 'static/images/optimized',
+      arrayOriginFormats: ['jpg', 'png'],
+      arrayDestinationFormats: ['png', 'webp'],
+      objectResizeOptions: {
+          width: 0.5, // WHEN THE WIDTH IS SMALLER THAN 1, IT CORRESPONDS TO A PERCENTAGE OF THE ORIGINAL WIDTH AND HEIGHT (IN THIS CASE 50%)
+      },
+  }).then((results) => {
+      console.table(results);
+  });
+  ```
+
+- MORE EXAMPLES: WORK IN PROGRESS...
+
+## PARAMETERS AND TYPING
+
+- PARAMETERS FOR `functionOptimizeImages`:
 
 | PARAMETER | DESCRIPTION | TYPE | REQUIRED | DEFAULT |
 | - | - | - | - | - |
-| `stringOriginFolder` | THE FOLDER WITH THE ORIGINAL IMAGES | `string` | YES | - | -->
+| `stringOriginFolder` | THE FOLDER WITH THE ORIGINAL IMAGES | `string` | YES | - |
+| `stringDestinationFolder` | THE FOLDER WHERE THE OPTIMIZED IMAGES ARE GOING TO BE SAVED | `string` | YES | - |
+| `arrayOriginFormats` | FORMATS OF THE ORIGINAL IMAGES | ARRAY WITH ELEMENTS BEEING 'webp' OR 'avif' OR 'png' OR 'jpg' OR 'tiff' OR 'gif' | YES | - |
+| `arrayDestinationFormats` | FORMATS FOR THE NEW IMAGES | ARRAY WITH ELEMENTS BEEING 'webp' OR 'avif' OR 'png' OR 'jpg' OR 'tiff' OR 'gif' OR 'svg' | YES | - |
+| objectResizeOptions | SHARP.JS OPTIONS FOR IMAGE RESIZING | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-resize#resize) | NO | - |
+| objectPngOptions | SHARP.JS OPTIONS FOR PNG TRANSFORMATIONS | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-output#png) | NO | - |
+| objectJpegOptions | SHARP.JS OPTIONS FOR JPG TRANSFORMATIONS | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-output#jpeg) | NO | - |
+| objectWebpOptions | SHARP.JS OPTIONS FOR WEBP TRANSFORMATIONS | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-output#webp) | NO | - |
+| objectAvifOptions | SHARP.JS OPTIONS FOR AVIF TRANSFORMATIONS | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-output#avif) | NO | - |
+| objectAvifOptions | SHARP.JS OPTIONS FOR AVIF TRANSFORMATIONS | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-output#avif) | NO | - |
+| objectTiffOptions | SHARP.JS OPTIONS FOR TIFF TRANSFORMATIONS | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-output#tiff) | NO | - |
+| objectGifOptions | SHARP.JS OPTIONS FOR GIF TRANSFORMATIONS | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-output#gif) | NO | - |
+| objectBlurOptions | SHARP.JS OPTIONS FOR BLUR TRANSFORMATIONS | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-operation#blur) | NO | - |
+| objectWatermarkOptions | OBJECT WITH OPTIONS FOR WATERMARK INSERTION | `typeWatermarkOptions` DESCRIBED BELLOW | NO | - |
 
-UNDER CONSTRUCTION...
+- typeWatermarkOptions TYPE:
+
+| KEY | DESCRIPTION | TYPE | REQUIRED | DEFAULT |
+| - | - | - | - | - |
+| stringWatermarkFile | PATH OF THE IMAGE TO USE AS WATERMARK | `string` | YES | - |
+| stringWatermarkFile | PATH OF THE IMAGE TO USE AS WATERMARK | `string` | YES | - |
+| numberOpacity | WATERMARK OPACITY | `number` BETWEEN 0 AND 1 | YES | - |
+| objectResizeOptions | SHARP.JS OPTIONS FOR RESIZING THE WATERMARK IMAGE | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-resize#resize) | NO | - |
+| stringGravity | WATERMARK POSITION | 'centre' OR 'northwest' OR 'northeast' OR 'southeast' OR 'southwest' | NO | `centre` |
