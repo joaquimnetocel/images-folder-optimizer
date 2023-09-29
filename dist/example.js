@@ -3,7 +3,7 @@ functionOptimizeImages({
     stringOriginFolder: 'static/images/originals',
     stringDestinationFolder: 'static/images/optimized',
     arrayOriginFormats: ['jpg', 'png'],
-    arrayDestinationFormats: ['webp', 'avif'],
+    arrayDestinationFormats: ['webp', 'avif', 'png'],
 }).then((results) => {
     console.table(results);
 });
