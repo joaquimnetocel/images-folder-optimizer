@@ -4,13 +4,14 @@
     <img src='./logo.png' width='100' alt='LOGO'>
 </div>
 
-High speed package that uses [sharp.js](https://sharp.pixelplumbing.com/) to recursively optimize, transform and convert images from a folder to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images. It is also possible to add watermark to the output images controlling opacity and positioning.
+A high performance package that uses [sharp.js](https://sharp.pixelplumbing.com/) to recursively optimize, transform and convert images from a folder to smaller, web-friendly JPEG, PNG, WebP, GIF and AVIF images. It is also possible to add watermark to the output images controlling opacity and positioning.
 
 ![GITHUB VERSION](https://img.shields.io/github/package-json/v/joaquimnetocel/images-folder-optimizer?label=github%20version&logo=github&color=lightgray) ![NPM VERSION](https://img.shields.io/npm/v/images-folder-optimizer?color=red&logo=npm&label=npm%20version) ![NPM Downloads](https://img.shields.io/npm/dw/images-folder-optimizer?color=red&label=npm%20downloads&logo=npm) ![NPM License](https://img.shields.io/npm/l/images-folder-optimizer?color) [![Twitter](https://img.shields.io/twitter/follow/:twitterHandle.svg?style=social&label=@joaquimnetocel)](https://twitter.com/joaquimnetocel)
 
 ## FEATURES
 
 - PROCCESS ALL IMAGE FILES IN A FOLDER AT ONCE
+- SIGNIFICANT REDUCTION IN IMAGE SIZE
 - SCAN FOR IMAGE FILES RECURSIVELY ON ALL SUBFOLDERS
 - CONVERSION BETWEEN IMAGE FORMATS, CHOOSING BOTH INPUT AND OUTPUT FORMATS
 - IMAGE RESIZING
