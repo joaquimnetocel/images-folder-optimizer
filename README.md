@@ -19,9 +19,7 @@ High speed package that uses [sharp.js](https://sharp.pixelplumbing.com/) to rec
 - FULL TYPESCRIPT SUPPORT
 - FULL CONTROL FOR SHARP.JS PARAMETERS
 
-## USAGE
-
-### IN YOUR PROJECT
+## HOW TO USE IN YOUR PROJECT
 
 - INSTALL THE PACKAGE:
 
