@@ -1,6 +1,6 @@
 # images-folder-optimizer
 
-<div style='display:flex;justify-content:center;'>
+<div align="center">
     <img src='./logo.png' width='100' alt='LOGO'>
 </div>
 
