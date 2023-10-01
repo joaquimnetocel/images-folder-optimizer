@@ -1,5 +1,4 @@
 node_modules
-static/
-src/
+static
+src
 logo.png
-dist/examples/
