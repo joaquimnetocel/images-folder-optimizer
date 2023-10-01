@@ -53,7 +53,7 @@ A high performance package that uses [sharp.js](https://sharp.pixelplumbing.com/
 
 ## BUILT-IN EXAMPLES
 
-YOU CAN FIND BUILT-IN EXAMPLES IN `src/examples/`. LET'S TRY ONE OF THEM:
+YOU CAN FIND BUILT-IN EXAMPLES IN `src/examples/` [[LINK](https://github.com/joaquimnetocel/images-folder-optimizer/tree/main/src/examples)]. LET'S TRY ONE OF THEM:
 
   ```bash
   npx tsc
