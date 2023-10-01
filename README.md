@@ -49,42 +49,16 @@ A high performance package that uses [sharp.js](https://sharp.pixelplumbing.com/
   node example.js
   ```
 
-## BUILT-IN EXAMPLE
+- CHECK THE NEW IMAGES IN `static/images/optimized`.
 
-YOU CAN TRY A BUILT-IN EXAMPLE WITH:
+## BUILT-IN EXAMPLES
+
+YOU CAN FIND BUILT-IN EXAMPLES IN `src/examples/`. LET'S TRY ONE OF THEM:
 
   ```bash
   npx tsc
-  node dist/example.js
+  node dist/examples/exampleFormatConversion.js
   ```
-
-OR WITH THE EQUIVALENT NPM SCRIPT:
-
-  ```bash
-  npm run example
-  ```
-
-## EXAMPLES
-
-- IMAGE RESIZING:
-
-  ```javascript
-  import { functionOptimizeImages } from 'images-folder-optimizer';
-
-  functionOptimizeImages({
-      stringOriginFolder: 'static/images/originals',
-      stringDestinationFolder: 'static/images/optimized',
-      arrayOriginFormats: ['jpg', 'png'],
-      arrayDestinationFormats: ['png', 'webp'],
-      objectResizeOptions: {
-          width: 0.5, // WHEN THE WIDTH IS SMALLER THAN 1, IT CORRESPONDS TO A PERCENTAGE OF THE ORIGINAL WIDTH AND HEIGHT (IN THIS CASE 50%)
-      },
-  }).then((results) => {
-      console.table(results);
-  });
-  ```
-
-- MORE EXAMPLES: WORK IN PROGRESS...
 
 ## PARAMETERS AND TYPING
 
@@ -111,7 +85,6 @@ OR WITH THE EQUIVALENT NPM SCRIPT:
 
 | KEY | DESCRIPTION | TYPE | REQUIRED | DEFAULT |
 | - | - | - | - | - |
-| stringWatermarkFile | PATH OF THE IMAGE TO USE AS WATERMARK | `string` | YES | - |
 | stringWatermarkFile | PATH OF THE IMAGE TO USE AS WATERMARK | `string` | YES | - |
 | numberOpacity | WATERMARK OPACITY | `number` BETWEEN 0 AND 1 | YES | - |
 | objectResizeOptions | SHARP.JS OPTIONS FOR RESIZING THE WATERMARK IMAGE | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-resize#resize) | NO | - |
