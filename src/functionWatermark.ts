@@ -1,4 +1,5 @@
 import sharp, { type ResizeOptions, type Sharp } from 'sharp';
+import { functionHandleBars } from './functionHandleBars.js';
 
 export type typeWatermarkOptions = {
 	stringWatermarkFile: string;
@@ -30,6 +31,8 @@ export const functionWatermark = async function ({ parSharp, parWatermarkOptions
 	if (numberImageHeight === undefined) {
 		return;
 	}
+
+	parWatermarkOptions.stringWatermarkFile = functionHandleBars(parWatermarkOptions.stringWatermarkFile);
 
 	const sharpWatermark = sharp(parWatermarkOptions.stringWatermarkFile);
 

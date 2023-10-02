@@ -119,10 +119,24 @@ export const functionOptimizeImages = async function (objectParameters: typePara
 		const arrayEntries = Object.entries(objectOptimizations);
 
 		const arrayFormatPromises = arrayEntries.map(async ([currentKey, currentValue]) => {
-			if (!fs.existsSync(`${stringNewDestinationFolder}/${currentKey}`)) {
-				fs.mkdirSync(`${stringNewDestinationFolder}/${currentKey}`);
+			if (arrayDestinationFormats.length !== 1) {
+				if (!fs.existsSync(`${stringNewDestinationFolder}/${currentKey}`)) {
+					fs.mkdirSync(`${stringNewDestinationFolder}/${currentKey}`);
+				}
+			} else {
+				if (!fs.existsSync(stringNewDestinationFolder)) {
+					fs.mkdirSync(stringNewDestinationFolder);
+				}
 			}
-			const objectReturn = await currentValue.toFile(`${stringNewDestinationFolder}/${currentKey}/${stringFileName}.${currentKey}`);
+
+			const objectReturn = await functionSaveFile();
+			function functionSaveFile() {
+				if (arrayDestinationFormats.length === 1) {
+					return currentValue.toFile(`${stringNewDestinationFolder}/${stringFileName}.${currentKey}`);
+				}
+				return currentValue.toFile(`${stringNewDestinationFolder}/${currentKey}/${stringFileName}.${currentKey}`);
+			}
+
 			const numberNewFileSize = Math.ceil(objectReturn.size / 1024);
 			const numberChangeInQuiloBytes = ((numberNewFileSize - numberFileSize) / numberFileSize) * 100;
 			arrayTableResults.push({
