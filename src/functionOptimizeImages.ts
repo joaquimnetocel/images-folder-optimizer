@@ -64,6 +64,14 @@ export const functionOptimizeImages = async function (objectParameters: typeOpti
 	const arrayFilePromises = arrayFileNames.map(async (currentFullFileName) => {
 		const { stringFileName, stringFileExtension } = functionExtractNameAndExtension(currentFullFileName);
 
+		if (stringFileNameSuffix !== undefined) {
+			if (stringFileName.length >= stringFileNameSuffix.length) {
+				if (stringFileName.slice(-stringFileNameSuffix.length) === stringFileNameSuffix) {
+					return;
+				}
+			}
+		}
+
 		if (stringFileExtension === undefined) {
 			return;
 		}

@@ -5,6 +5,7 @@ functionOptimizeImages({
 	stringDestinationFolder: 'static/images/optimized',
 	arrayOriginFormats: ['jpg', 'png'],
 	arrayDestinationFormats: ['webp', 'avif'],
+	stringFileNameSuffix: 'quim',
 }).then((results) => {
 	console.table(results);
 });

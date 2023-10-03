@@ -31,6 +31,14 @@ export const functionOptimizeImages = async function (objectParameters) {
     console.log(`OPTIMIZING THE FOLDER ${stringNewOriginFolder} WITH THE FOLLOWING FILES: ${arrayFileNames.join(', ')}`);
     const arrayFilePromises = arrayFileNames.map(async (currentFullFileName) => {
         const { stringFileName, stringFileExtension } = functionExtractNameAndExtension(currentFullFileName);
+        if (stringFileNameSuffix !== undefined) {
+            if (stringFileName.length >= stringFileNameSuffix.length) {
+                console.log(stringFileName, stringFileName.slice(-stringFileNameSuffix.length), 'and', stringFileNameSuffix);
+                if (stringFileName.slice(-stringFileNameSuffix.length) === stringFileNameSuffix) {
+                    return;
+                }
+            }
+        }
         if (stringFileExtension === undefined) {
             return;
         }

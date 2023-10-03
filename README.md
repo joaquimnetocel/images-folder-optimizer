@@ -70,6 +70,7 @@ YOU CAN FIND BUILT-IN EXAMPLES IN `src/examples/` [[LINK](https://github.com/joa
 | `stringDestinationFolder` | THE FOLDER WHERE THE OPTIMIZED IMAGES ARE GOING TO BE SAVED | `string` | YES | - |
 | `arrayOriginFormats` | FORMATS OF THE ORIGINAL IMAGES | ARRAY WITH ELEMENTS BEEING 'webp' OR 'avif' OR 'png' OR 'jpg' OR 'tiff' OR 'gif' | YES | - |
 | `arrayDestinationFormats` | FORMATS FOR THE NEW IMAGES | ARRAY WITH ELEMENTS BEEING 'webp' OR 'avif' OR 'png' OR 'jpg' OR 'tiff' OR 'gif' OR 'svg' | YES | - |
+| `stringFileNameSuffix` | SUFIX FOR THE NEW FILE NAMES. EVERY ORIGINAL FILE NAME WITH THIS SUFIX IS GOING TO BE IGNORED | NO | - |
 | objectResizeOptions | SHARP.JS OPTIONS FOR IMAGE RESIZING | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-resize#resize) | NO | - |
 | objectPngOptions | SHARP.JS OPTIONS FOR PNG TRANSFORMATIONS | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-output#png) | NO | - |
 | objectJpegOptions | SHARP.JS OPTIONS FOR JPG TRANSFORMATIONS | [CHECK IT HERE](https://sharp.pixelplumbing.com/api-output#jpeg) | NO | - |
