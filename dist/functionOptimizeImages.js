@@ -33,7 +33,6 @@ export const functionOptimizeImages = async function (objectParameters) {
         const { stringFileName, stringFileExtension } = functionExtractNameAndExtension(currentFullFileName);
         if (stringFileNameSuffix !== undefined) {
             if (stringFileName.length >= stringFileNameSuffix.length) {
-                console.log(stringFileName, stringFileName.slice(-stringFileNameSuffix.length), 'and', stringFileNameSuffix);
                 if (stringFileName.slice(-stringFileNameSuffix.length) === stringFileNameSuffix) {
                     return;
                 }
