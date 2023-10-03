@@ -1,2 +1,2 @@
-import { functionOptimizeImages } from './functionOptimizeImages.js';
-export { functionOptimizeImages };
+import { functionOptimizeImages, typeOptimizationOptions } from './functionOptimizeImages.js';
+export { functionOptimizeImages, typeOptimizationOptions };

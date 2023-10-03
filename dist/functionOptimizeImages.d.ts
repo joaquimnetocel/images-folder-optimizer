@@ -2,7 +2,7 @@ import { type AvifOptions, type GifOptions, type JpegOptions, type PngOptions, t
 import { type typeWatermarkOptions } from './functionWatermark.js';
 type typeOutputFormats = 'webp' | 'avif' | 'png' | 'jpg' | 'tiff' | 'gif';
 type typeInputFormats = typeOutputFormats | 'svg';
-type typeParameters = {
+export type typeOptimizationOptions = {
     stringOriginFolder: string;
     stringDestinationFolder: string;
     arrayOriginFormats: typeInputFormats[];
@@ -20,7 +20,7 @@ type typeParameters = {
     objectWatermarkOptions?: typeWatermarkOptions;
     stringFileNameSuffix?: string;
 };
-export declare const functionOptimizeImages: (objectParameters: typeParameters) => Promise<{
+export declare const functionOptimizeImages: (objectParameters: typeOptimizationOptions) => Promise<{
     'ORIGINAL FILE': string;
     'OPTIMIZED FILE': string;
     'TRANSFORMATION RESULT': string;
