@@ -34,36 +34,54 @@ export const functionWatermark = async function ({ parSharp, parWatermarkOptions
 
 	parWatermarkOptions.stringWatermarkFile = functionHandleBars(parWatermarkOptions.stringWatermarkFile);
 
-	const sharpWatermark = sharp(parWatermarkOptions.stringWatermarkFile);
+	let sharpWatermark = sharp(parWatermarkOptions.stringWatermarkFile);
 
 	const functionProccessWatermarkResizeOptions = async function () {
-		const temp = parWatermarkOptions.objectResizeOptions ?? {
-			width: numberImageWidth,
-			height: numberImageHeight,
-		};
+		const temp = parWatermarkOptions.objectResizeOptions;
 		const objectReturn = { ...temp };
 		// IF PERCENTUAL WIDTH THEN MAKE WATERMARK WIDTH AS PERCENTUAL OF IMAGE WIDTH
 		if (objectReturn.width !== undefined) {
-			if (objectReturn.width < 1) {
+			if (objectReturn.width <= 1) {
 				objectReturn.width = Math.floor(objectReturn.width * numberImageWidth);
 			}
 		}
 		/////
-		// TRUNCATE WATERMARK WIDTH TO IMAGE WIDTH
-		if (objectReturn.width !== undefined) {
-			objectReturn.width = objectReturn.width > numberImageWidth ? numberImageWidth : objectReturn.width;
-		}
-		/////
-		// TRUNCATE WATERMARK HEIGHT TO IMAGE HEIGHT
+		// IF PERCENTUAL HEIGHT THEN MAKE WATERMARK HEIGHT AS PERCENTUAL OF IMAGE WIDTH
 		if (objectReturn.height !== undefined) {
-			objectReturn.height = objectReturn.height > numberImageHeight ? numberImageHeight : objectReturn.height;
+			if (objectReturn.height <= 1) {
+				objectReturn.height = Math.floor(objectReturn.height * numberImageHeight);
+			}
 		}
 		/////
 		return objectReturn;
 	};
 	const objectNewWatermarkResizeOptions = await functionProccessWatermarkResizeOptions();
 
-	sharpWatermark.resize(objectNewWatermarkResizeOptions);
+	sharpWatermark = sharp(await sharpWatermark.clone().resize(objectNewWatermarkResizeOptions).toBuffer());
+
+	const functionFitWatermarkWidth = async function () {
+		const { width } = await sharpWatermark.metadata();
+		if (width === undefined) {
+			return sharpWatermark;
+		}
+		if (width > numberImageWidth) {
+			return sharp(await sharpWatermark.clone().resize({ width: numberImageWidth }).toBuffer());
+		}
+		return sharpWatermark;
+	};
+	sharpWatermark = await functionFitWatermarkWidth();
+
+	const functionFitWatermarkHeight = async function () {
+		const { height } = await sharpWatermark.metadata();
+		if (height === undefined) {
+			return sharpWatermark;
+		}
+		if (height > numberImageHeight) {
+			return sharp(await sharpWatermark.clone().resize({ height: numberImageHeight }).toBuffer());
+		}
+		return sharpWatermark;
+	};
+	sharpWatermark = await functionFitWatermarkHeight();
 
 	sharpWatermark.composite([
 		{

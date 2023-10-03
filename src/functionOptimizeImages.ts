@@ -100,14 +100,10 @@ export const functionOptimizeImages = async function (objectParameters: typePara
 			objectOptimizations.avif = sharpFile.clone().avif(objectAvifOptions);
 		}
 		if (arrayDestinationFormats.includes('jpg')) {
-			if (stringFileExtension === 'jpg') {
-				objectOptimizations.jpg = sharpFile.clone().jpeg(objectJpegOptions);
-			}
+			objectOptimizations.jpg = sharpFile.clone().jpeg(objectJpegOptions);
 		}
 		if (arrayDestinationFormats.includes('png')) {
-			if (stringFileExtension === 'png') {
-				objectOptimizations.png = sharpFile.clone().png(objectPngOptions);
-			}
+			objectOptimizations.png = sharpFile.clone().png(objectPngOptions);
 		}
 		if (arrayDestinationFormats.includes('tiff')) {
 			objectOptimizations.tiff = sharpFile.clone().tiff(objectTiffOptions);
