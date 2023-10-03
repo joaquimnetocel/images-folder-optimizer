@@ -18,6 +18,7 @@ type typeParameters = {
         sigma: number | boolean | undefined;
     };
     objectWatermarkOptions?: typeWatermarkOptions;
+    stringFileNameSuffix?: string;
 };
 export declare const functionOptimizeImages: (objectParameters: typeParameters) => Promise<{
     'ORIGINAL FILE': string;

@@ -11,7 +11,7 @@ import { functionWatermark, type typeWatermarkOptions } from './functionWatermar
 type typeOutputFormats = 'webp' | 'avif' | 'png' | 'jpg' | 'tiff' | 'gif';
 type typeInputFormats = typeOutputFormats | 'svg';
 
-type typeParameters = {
+export type typeOptimizationOptions = {
 	stringOriginFolder: string;
 	stringDestinationFolder: string;
 	arrayOriginFormats: typeInputFormats[];
@@ -25,10 +25,11 @@ type typeParameters = {
 	objectResizeOptions?: ResizeOptions;
 	objectBlurOptions?: { sigma: number | boolean | undefined };
 	objectWatermarkOptions?: typeWatermarkOptions;
+	stringFileNameSuffix?: string;
 };
 
-export const functionOptimizeImages = async function (objectParameters: typeParameters) {
-	const { stringOriginFolder, stringDestinationFolder, arrayOriginFormats = ['avif', 'gif', 'jpg', 'png', 'svg', 'tiff', 'webp'], arrayDestinationFormats, objectWebpOptions, objectAvifOptions, objectTiffOptions, objectJpegOptions, objectPngOptions, objectGifOptions, objectResizeOptions, objectBlurOptions, objectWatermarkOptions } = objectParameters;
+export const functionOptimizeImages = async function (objectParameters: typeOptimizationOptions) {
+	const { stringOriginFolder, stringDestinationFolder, arrayOriginFormats = ['avif', 'gif', 'jpg', 'png', 'svg', 'tiff', 'webp'], arrayDestinationFormats, objectWebpOptions, objectAvifOptions, objectTiffOptions, objectJpegOptions, objectPngOptions, objectGifOptions, objectResizeOptions, objectBlurOptions, objectWatermarkOptions, stringFileNameSuffix } = objectParameters;
 	const stringNewOriginFolder = functionHandleBars(stringOriginFolder);
 	const stringNewDestinationFolder = functionHandleBars(stringDestinationFolder);
 
@@ -128,9 +129,9 @@ export const functionOptimizeImages = async function (objectParameters: typePara
 			const objectReturn = await functionSaveFile();
 			function functionSaveFile() {
 				if (arrayDestinationFormats.length === 1) {
-					return currentValue.toFile(`${stringNewDestinationFolder}/${stringFileName}.${currentKey}`);
+					return currentValue.toFile(`${stringNewDestinationFolder}/${stringFileName}${stringFileNameSuffix ?? ''}.${currentKey}`);
 				}
-				return currentValue.toFile(`${stringNewDestinationFolder}/${currentKey}/${stringFileName}.${currentKey}`);
+				return currentValue.toFile(`${stringNewDestinationFolder}/${currentKey}/${stringFileName}${stringFileNameSuffix ?? ''}.${currentKey}`);
 			}
 
 			const numberNewFileSize = Math.ceil(objectReturn.size / 1024);

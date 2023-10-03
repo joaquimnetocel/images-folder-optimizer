@@ -8,7 +8,7 @@ import { functionHandleBars } from './functionHandleBars.js';
 import { functionResize } from './functionResize.js';
 import { functionWatermark } from './functionWatermark.js';
 export const functionOptimizeImages = async function (objectParameters) {
-    const { stringOriginFolder, stringDestinationFolder, arrayOriginFormats = ['avif', 'gif', 'jpg', 'png', 'svg', 'tiff', 'webp'], arrayDestinationFormats, objectWebpOptions, objectAvifOptions, objectTiffOptions, objectJpegOptions, objectPngOptions, objectGifOptions, objectResizeOptions, objectBlurOptions, objectWatermarkOptions } = objectParameters;
+    const { stringOriginFolder, stringDestinationFolder, arrayOriginFormats = ['avif', 'gif', 'jpg', 'png', 'svg', 'tiff', 'webp'], arrayDestinationFormats, objectWebpOptions, objectAvifOptions, objectTiffOptions, objectJpegOptions, objectPngOptions, objectGifOptions, objectResizeOptions, objectBlurOptions, objectWatermarkOptions, stringFileNameSuffix } = objectParameters;
     const stringNewOriginFolder = functionHandleBars(stringOriginFolder);
     const stringNewDestinationFolder = functionHandleBars(stringDestinationFolder);
     const arrayTableResults = [];
@@ -86,9 +86,9 @@ export const functionOptimizeImages = async function (objectParameters) {
             const objectReturn = await functionSaveFile();
             function functionSaveFile() {
                 if (arrayDestinationFormats.length === 1) {
-                    return currentValue.toFile(`${stringNewDestinationFolder}/${stringFileName}.${currentKey}`);
+                    return currentValue.toFile(`${stringNewDestinationFolder}/${stringFileName}${stringFileNameSuffix ?? ''}.${currentKey}`);
                 }
-                return currentValue.toFile(`${stringNewDestinationFolder}/${currentKey}/${stringFileName}.${currentKey}`);
+                return currentValue.toFile(`${stringNewDestinationFolder}/${currentKey}/${stringFileName}${stringFileNameSuffix ?? ''}.${currentKey}`);
             }
             const numberNewFileSize = Math.ceil(objectReturn.size / 1024);
             const numberChangeInQuiloBytes = ((numberNewFileSize - numberFileSize) / numberFileSize) * 100;
